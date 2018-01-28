@@ -85,6 +85,10 @@ module ManageIQ::Providers::Kubernetes::ContainerManagerMixin
     infra_manager.verify_virt_supported
   end
 
+  def verify_ssh_keypair_credentials
+    true
+  end
+
   # UI methods for determining availability of fields
   def supports_port?
     true
@@ -162,6 +166,8 @@ module ManageIQ::Providers::Kubernetes::ContainerManagerMixin
       verify_prometheus_alerts_credentials
     elsif options[:auth_type].to_s == "kubevirt"
       verify_kubevirt_credentials
+    elsif options[:auth_type].to_s == "ssh_keypair"
+      verify_ssh_keypair_credentials
     else
       with_provider_connection(options, &:api_valid?)
     end
@@ -180,7 +186,7 @@ module ManageIQ::Providers::Kubernetes::ContainerManagerMixin
   end
 
   def supported_auth_types
-    %w(default password bearer hawkular prometheus prometheus_alerts kubevirt)
+    %w(default password bearer hawkular prometheus prometheus_alerts kubevirt ssh_keypair)
   end
 
   def supports_authentication?(authtype)
